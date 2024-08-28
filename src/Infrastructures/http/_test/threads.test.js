@@ -18,6 +18,7 @@ describe("/threads endpoint", () => {
 
   afterAll(async () => {
     await UsersTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
     await pool.end();
   });
 

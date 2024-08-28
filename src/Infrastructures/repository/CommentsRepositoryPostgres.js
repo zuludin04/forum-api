@@ -28,7 +28,7 @@ class CommentsRepositoryPostgres extends CommentsRepository {
   async softDeleteComment(comment) {
     const { id, owner } = comment;
     const query = {
-      text: `UPDATE commentthread SET is_delete = 1, content = '**komentar telah dihapus**' WHERE id = $1 RETURNING id, owner`,
+      text: `UPDATE commentthread SET is_delete = 1 WHERE id = $1 RETURNING id, owner, is_delete`,
       values: [id],
     };
 
@@ -43,6 +43,8 @@ class CommentsRepositoryPostgres extends CommentsRepository {
         "anda tidak memiliki akses untuk menghapus komentar ini"
       );
     }
+
+    return result.rows[0];
   }
 
   async commentsByThread(thread) {
@@ -51,8 +53,8 @@ class CommentsRepositoryPostgres extends CommentsRepository {
       SELECT 
         commentthread.id, 
         users.username, 
-        commentthread.content, 
-        commentthread.date 
+        (CASE WHEN commentthread.is_delete = 1 THEN '**komentar telah dihapus**' ELSE commentthread.content END) AS content, 
+        TO_CHAR(commentthread.date, 'Dy Mon DD YYYY') AS date
       FROM commentthread 
       INNER JOIN users ON commentthread.owner = users.id 
       WHERE commentthread.thread = $1

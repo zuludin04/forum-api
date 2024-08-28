@@ -25,7 +25,7 @@ describe("CommentsRepositoryPostgres", () => {
   });
 
   afterEach(async () => {
-    // await CommentsTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -76,6 +76,15 @@ describe("CommentsRepositoryPostgres", () => {
     });
 
     it("should return AuthorizationError when comment deleted by different user", async () => {
+      const commentTest = {
+        id: "comment-123",
+        content: "comment",
+        owner: "user-123",
+        thread: "thread-123",
+        date: Date.now() / 1000,
+      };
+      await CommentsTableTestHelper.addComment(commentTest);
+
       const payload = { id: "comment-123", owner: "user" };
 
       const commentsRepositoryPostgres = new CommentsRepositoryPostgres(
@@ -89,6 +98,15 @@ describe("CommentsRepositoryPostgres", () => {
     });
 
     it("should not return NotFoundError or AuthorizationError when delete comment success", async () => {
+      const commentTest = {
+        id: "comment-123",
+        content: "comment",
+        owner: "user-123",
+        thread: "thread-123",
+        date: Date.now() / 1000,
+      };
+      await CommentsTableTestHelper.addComment(commentTest);
+
       const payload = { id: "comment-123", owner: "user-123" };
 
       const commentsRepositoryPostgres = new CommentsRepositoryPostgres(
@@ -102,6 +120,33 @@ describe("CommentsRepositoryPostgres", () => {
       await expect(
         commentsRepositoryPostgres.softDeleteComment(payload)
       ).resolves.not.toThrow(AuthorizationError);
+    });
+
+    it("should should return comment result correctly", async () => {
+      const commentTest = {
+        id: "comment-123",
+        content: "comment",
+        owner: "user-123",
+        thread: "thread-123",
+        date: Date.now() / 1000,
+      };
+      await CommentsTableTestHelper.addComment(commentTest);
+      const payload = { id: "comment-123", owner: "user-123" };
+
+      const commentsRepositoryPostgres = new CommentsRepositoryPostgres(
+        pool,
+        {}
+      );
+
+      const comment = await commentsRepositoryPostgres.softDeleteComment(
+        payload
+      );
+
+      expect(comment).toStrictEqual({
+        id: "comment-123",
+        owner: "user-123",
+        is_delete: 1,
+      });
     });
   });
 
@@ -125,6 +170,14 @@ describe("CommentsRepositoryPostgres", () => {
         "thread-123"
       );
       expect(comments).toBeTruthy();
+      expect(comments).toStrictEqual([
+        {
+          id: "comment-124",
+          username: "dicoding",
+          content: "comment",
+          date: new Date(Date(comment.date)).toDateString(),
+        },
+      ]);
     });
   });
 });
