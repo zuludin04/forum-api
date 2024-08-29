@@ -13,6 +13,12 @@ describe("DeleteCommentUseCase", () => {
     mockThreadRepository.verifyThreadExistence = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
+    mockCommentsRepository.verifyCommentExistence = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+    mockCommentsRepository.verifyCommentOwner = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
     mockCommentsRepository.softDeleteComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
@@ -24,9 +30,8 @@ describe("DeleteCommentUseCase", () => {
 
     await getUseCase.execute(generateUserId(), useCasePayload);
 
-    expect(mockCommentsRepository.softDeleteComment).toHaveBeenCalledWith({
-      id: useCasePayload.commentId,
-      owner: generateUserId(),
-    });
+    expect(mockCommentsRepository.softDeleteComment).toHaveBeenCalledWith(
+      useCasePayload.commentId
+    );
   });
 });

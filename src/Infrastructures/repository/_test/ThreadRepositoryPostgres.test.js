@@ -78,14 +78,5 @@ describe("ThreadRepositoryPostgres", () => {
       expect(thread.username).toEqual("dicoding");
       expect(thread.id).toEqual("thread-123");
     });
-
-    it("should throw NotFound error when thread not found", async () => {
-      const threadId = "thread-123";
-      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-
-      await expect(
-        threadRepositoryPostgres.detailThread(threadId)
-      ).rejects.toThrowError(NotFoundError);
-    });
   });
 });

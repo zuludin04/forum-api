@@ -25,24 +25,13 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     return new Comments({ ...result.rows[0] });
   }
 
-  async softDeleteComment(comment) {
-    const { id, owner } = comment;
+  async softDeleteComment(id) {
     const query = {
       text: `UPDATE commentthread SET is_delete = 1 WHERE id = $1 RETURNING id, owner, is_delete`,
       values: [id],
     };
 
     const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new NotFoundError("tidak ada komentar untuk dihapus");
-    }
-
-    if (result.rows[0].owner !== owner) {
-      throw new AuthorizationError(
-        "anda tidak memiliki akses untuk menghapus komentar ini"
-      );
-    }
 
     return result.rows[0];
   }
@@ -65,6 +54,35 @@ class CommentsRepositoryPostgres extends CommentsRepository {
     const result = await this._pool.query(query);
 
     return result.rows;
+  }
+
+  async verifyCommentExistence(comment) {
+    const query = {
+      text: `SELECT * FROM commentthread WHERE id = $1`,
+      values: [comment],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError("comment tidak ditemukan");
+    }
+  }
+
+  async verifyCommentOwner(id, owner) {
+    const query = {
+      text: `SELECT * FROM commentthread WHERE id = $1`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    const comment = result.rows[0];
+    if (comment.owner !== owner) {
+      throw new AuthorizationError(
+        "anda tidak memiliki akses untuk menghapus komentar ini"
+      );
+    }
   }
 }
 
