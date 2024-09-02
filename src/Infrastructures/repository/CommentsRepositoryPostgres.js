@@ -2,6 +2,7 @@ const AuthorizationError = require("../../Commons/exceptions/AuthorizationError"
 const NotFoundError = require("../../Commons/exceptions/NotFoundError");
 const CommentsRepository = require("../../Domains/comments/CommentsRepository");
 const Comments = require("../../Domains/comments/entities/Comments");
+const DetailComment = require("../../Domains/comments/entities/DetailComment");
 
 class CommentsRepositoryPostgres extends CommentsRepository {
   constructor(pool, idGenerator) {
@@ -42,8 +43,9 @@ class CommentsRepositoryPostgres extends CommentsRepository {
       SELECT 
         commentthread.id, 
         users.username, 
-        (CASE WHEN commentthread.is_delete = 1 THEN '**komentar telah dihapus**' ELSE commentthread.content END) AS content, 
-        TO_CHAR(commentthread.date, 'Dy Mon DD YYYY') AS date
+        commentthread.content,
+        TO_CHAR(commentthread.date, 'Dy Mon DD YYYY') AS date,
+        commentthread.is_delete
       FROM commentthread 
       INNER JOIN users ON commentthread.owner = users.id 
       WHERE commentthread.thread = $1
@@ -53,7 +55,18 @@ class CommentsRepositoryPostgres extends CommentsRepository {
 
     const result = await this._pool.query(query);
 
-    return result.rows;
+    const comments = result.rows.map(
+      (value) =>
+        new DetailComment({
+          id: value.id,
+          username: value.username,
+          content: value.content,
+          date: new Date(Date(value.date)).toDateString(),
+          isDeleted: value.is_delete,
+        })
+    );
+
+    return comments;
   }
 
   async verifyCommentExistence(comment) {

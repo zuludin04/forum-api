@@ -41,6 +41,7 @@ describe("DetailThreadUseCase", () => {
 
     const detail = await getUseCase.execute(threadId);
 
+    expect(mockThreadRepository.verifyThreadExistence).toBeCalledWith(threadId);
     expect(detail).toStrictEqual({
       id: "thread-123",
       title: "abc",

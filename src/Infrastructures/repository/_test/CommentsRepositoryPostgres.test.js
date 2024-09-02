@@ -4,6 +4,7 @@ const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
 const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 const Comments = require("../../../Domains/comments/entities/Comments");
+const DetailComment = require("../../../Domains/comments/entities/DetailComment");
 const NewComment = require("../../../Domains/comments/entities/NewComment");
 const pool = require("../../database/postgres/pool");
 const CommentsRepositoryPostgres = require("../CommentsRepositoryPostgres");
@@ -111,12 +112,13 @@ describe("CommentsRepositoryPostgres", () => {
       );
       expect(comments).toBeTruthy();
       expect(comments).toStrictEqual([
-        {
+        new DetailComment({
           id: "comment-124",
           username: "dicoding",
           content: "comment",
           date: new Date(Date(comment.date)).toDateString(),
-        },
+          isDeleted: 0,
+        }),
       ]);
     });
   });
