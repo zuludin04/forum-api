@@ -1,4 +1,5 @@
 const CommentsRepository = require("../../../Domains/comments/CommentsRepository");
+const DetailComment = require("../../../Domains/comments/entities/DetailComment");
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
 const DetailThreadUseCase = require("../DetailThreadUseCase");
 
@@ -6,13 +7,13 @@ describe("DetailThreadUseCase", () => {
   it("should be orchestrating detail thread use case correctly", async () => {
     const threadId = "thread-123";
 
-    const comment = {
+    const mockComment = new DetailComment({
       id: "comment-123",
       content: "comment",
       date: "2024-08-24",
       username: "dicoding",
-    };
-
+      isDeleted: 0,
+    });
     const detailThread = {
       id: "thread-123",
       title: "abc",
@@ -29,7 +30,7 @@ describe("DetailThreadUseCase", () => {
       .mockImplementation(() => Promise.resolve());
     mockCommentsRepository.commentsByThread = jest
       .fn()
-      .mockImplementation(() => Promise.resolve([comment]));
+      .mockImplementation(() => Promise.resolve([mockComment]));
     mockThreadRepository.detailThread = jest
       .fn()
       .mockImplementation(() => Promise.resolve(detailThread));
@@ -48,7 +49,15 @@ describe("DetailThreadUseCase", () => {
       body: "description",
       date: "2024-08-24",
       username: "dicoding",
-      comments: [comment],
+      comments: [
+        new DetailComment({
+          id: "comment-123",
+          content: "comment",
+          date: "2024-08-24",
+          username: "dicoding",
+          isDeleted: 0,
+        }),
+      ],
     });
     expect(mockCommentsRepository.commentsByThread).toBeCalledWith(threadId);
     expect(mockThreadRepository.detailThread).toBeCalledWith(threadId);
