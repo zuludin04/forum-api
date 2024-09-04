@@ -20,10 +20,10 @@ describe("a Thread entities", () => {
   it("should return thread object correctly", () => {
     const payload = { id: "thread-123", title: "abc", owner: "asa" };
 
-    const { title, body, owner } = new Thread(payload);
+    const { id, title, owner } = new Thread(payload);
 
+    expect(id).toEqual(payload.id);
     expect(title).toEqual(payload.title);
-    expect(body).toEqual(payload.body);
     expect(owner).toEqual(payload.owner);
   });
 });

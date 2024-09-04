@@ -10,6 +10,14 @@ class CommentsRepository {
   async commentsByThread(thread) {
     throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
+
+  async verifyCommentExistence(thread) {
+    throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+
+  async verifyCommentOwner(thread) {
+    throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
 }
 
 module.exports = CommentsRepository;

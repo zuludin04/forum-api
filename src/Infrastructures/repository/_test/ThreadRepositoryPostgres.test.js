@@ -44,6 +44,24 @@ describe("ThreadRepositoryPostgres", () => {
         new Thread({ id: "thread-123", title: "abc", owner: "user-123" })
       );
     });
+
+    it('should persist added thread and return thread correctly', async () => {
+      const newThread = new NewThread({
+        title: "abc",
+        body: "description",
+        owner: "user-123",
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      await threadRepositoryPostgres.addThread(newThread);
+
+      const thread = await ThreadTableTestHelper.findThreadById('thread-123');
+      expect(thread).toHaveLength(1);
+    });
   });
 
   describe("verifyThreadExistence function", () => {
@@ -77,6 +95,8 @@ describe("ThreadRepositoryPostgres", () => {
       expect(thread).toBeTruthy();
       expect(thread.username).toEqual("dicoding");
       expect(thread.id).toEqual("thread-123");
+      expect(thread.title).toEqual("abc")
+      expect(thread.body).toEqual("description")
     });
   });
 });
