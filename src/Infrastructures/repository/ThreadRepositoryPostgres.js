@@ -44,7 +44,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
         thread.id, 
         thread.title, 
         thread.body, 
-        thread.date, 
+        TO_CHAR(thread.date, 'Dy Mon DD YYYY') AS date, 
         users.username 
       FROM thread 
       INNER JOIN users ON thread.owner = users.id 

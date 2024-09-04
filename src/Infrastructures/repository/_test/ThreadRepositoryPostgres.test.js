@@ -45,13 +45,13 @@ describe("ThreadRepositoryPostgres", () => {
       );
     });
 
-    it('should persist added thread and return thread correctly', async () => {
+    it("should persist added thread and return thread correctly", async () => {
       const newThread = new NewThread({
         title: "abc",
         body: "description",
         owner: "user-123",
       });
-      const fakeIdGenerator = () => '123'; // stub!
+      const fakeIdGenerator = () => "123";
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(
         pool,
         fakeIdGenerator
@@ -59,7 +59,7 @@ describe("ThreadRepositoryPostgres", () => {
 
       await threadRepositoryPostgres.addThread(newThread);
 
-      const thread = await ThreadTableTestHelper.findThreadById('thread-123');
+      const thread = await ThreadTableTestHelper.findThreadById("thread-123");
       expect(thread).toHaveLength(1);
     });
   });
@@ -95,8 +95,9 @@ describe("ThreadRepositoryPostgres", () => {
       expect(thread).toBeTruthy();
       expect(thread.username).toEqual("dicoding");
       expect(thread.id).toEqual("thread-123");
-      expect(thread.title).toEqual("abc")
-      expect(thread.body).toEqual("description")
+      expect(thread.title).toEqual("abc");
+      expect(thread.body).toEqual("description");
+      expect(thread.date).toEqual(new Date().toDateString("Dy Mon DD YYYY"));
     });
   });
 });

@@ -30,9 +30,16 @@ describe("DeleteCommentUseCase", () => {
 
     await getUseCase.execute(generateUserId(), useCasePayload);
 
-    expect(mockThreadRepository.verifyThreadExistence).toHaveBeenCalledWith(useCasePayload.threadId)
-    expect(mockCommentsRepository.verifyCommentExistence).toHaveBeenCalledWith(useCasePayload.commentId)
-    expect(mockCommentsRepository.verifyCommentOwner).toHaveBeenCalledWith(useCasePayload.commentId, generateUserId())
+    expect(mockThreadRepository.verifyThreadExistence).toHaveBeenCalledWith(
+      useCasePayload.threadId
+    );
+    expect(mockCommentsRepository.verifyCommentExistence).toHaveBeenCalledWith(
+      useCasePayload.commentId
+    );
+    expect(mockCommentsRepository.verifyCommentOwner).toHaveBeenCalledWith(
+      useCasePayload.commentId,
+      generateUserId()
+    );
     expect(mockCommentsRepository.softDeleteComment).toHaveBeenCalledWith(
       useCasePayload.commentId
     );

@@ -63,7 +63,7 @@ describe("CommentsRepositoryPostgres", () => {
   });
 
   describe("softDeleteComment functiom", () => {
-    it("should should return comment result correctly", async () => {
+    it("should return comment result correctly", async () => {
       const commentTest = {
         id: "comment-123",
         content: "comment",
@@ -88,6 +88,29 @@ describe("CommentsRepositoryPostgres", () => {
         owner: "user-123",
         is_delete: 1,
       });
+    });
+
+    it("should change is_delete value when soft delete successfully", async () => {
+      const commentTest = {
+        id: "comment-123",
+        content: "comment",
+        owner: "user-123",
+        thread: "thread-123",
+        date: Date.now() / 1000,
+      };
+      await CommentsTableTestHelper.addComment(commentTest);
+      const payload = { id: "comment-123", owner: "user-123" };
+
+      const commentsRepositoryPostgres = new CommentsRepositoryPostgres(
+        pool,
+        {}
+      );
+
+      await commentsRepositoryPostgres.softDeleteComment(payload.id);
+
+      const comment = await CommentsTableTestHelper.findCommentById(payload.id);
+      expect(comment).toHaveLength(1);
+      expect(comment[0].is_delete).toEqual(1);
     });
   });
 

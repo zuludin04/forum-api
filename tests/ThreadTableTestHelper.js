@@ -7,17 +7,18 @@ const ThreadTableTestHelper = {
     title = "abc",
     body = "description",
     owner = "user-123",
+    date = Date.now() / 1000,
   }) {
     const query = {
-      text: "INSERT INTO thread VALUES($1, $2, $3, $4)",
-      values: [id, title, body, owner],
+      text: "INSERT INTO thread VALUES($1, $2, $3, $4, TO_TIMESTAMP($5))",
+      values: [id, title, body, owner, date],
     };
     await pool.query(query);
   },
 
   async findThreadById(id) {
     const query = {
-      text: 'SELECT * FROM thread WHERE id = $1',
+      text: "SELECT * FROM thread WHERE id = $1",
       values: [id],
     };
 
