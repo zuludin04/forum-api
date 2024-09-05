@@ -24,4 +24,20 @@ describe("CommentsRepository interface", () => {
       "COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED"
     );
   });
+
+  it("should throw error when invoke unimplemented method", async () => {
+    const commentsRepository = new CommentsRepository();
+
+    await expect(
+      commentsRepository.verifyCommentExistence("")
+    ).rejects.toThrowError("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  });
+
+  it("should throw error when invoke unimplemented method", async () => {
+    const commentsRepository = new CommentsRepository();
+
+    await expect(
+      commentsRepository.verifyCommentOwner({})
+    ).rejects.toThrowError("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  });
 });

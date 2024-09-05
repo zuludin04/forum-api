@@ -11,11 +11,11 @@ class CommentsRepository {
     throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 
-  async verifyCommentExistence(thread) {
+  async verifyCommentExistence(comment) {
     throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 
-  async verifyCommentOwner(thread) {
+  async verifyCommentOwner(comment, owner) {
     throw new Error("COMMENTS_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

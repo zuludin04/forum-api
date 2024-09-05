@@ -60,9 +60,30 @@ describe("CommentsRepositoryPostgres", () => {
         })
       );
     });
+
+    it("should persist added thread and return thread correctly", async () => {
+      const newComment = new NewComment({
+        content: "comment",
+        owner: "user-123",
+        thread: "thread-123",
+      });
+      const fakeIdGenerator = () => "123";
+
+      const commentsRepositoryPostgres = new CommentsRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      await commentsRepositoryPostgres.addComment(newComment);
+
+      const comment = await CommentsTableTestHelper.findCommentById(
+        "comment-123"
+      );
+      expect(comment).toHaveLength(1);
+    });
   });
 
-  describe("softDeleteComment functiom", () => {
+  describe("softDeleteComment function", () => {
     it("should return comment result correctly", async () => {
       const commentTest = {
         id: "comment-123",

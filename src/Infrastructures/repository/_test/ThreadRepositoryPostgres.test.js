@@ -85,19 +85,27 @@ describe("ThreadRepositoryPostgres", () => {
 
   describe("detailThread function", () => {
     it("should return detail thread object", async () => {
-      const threadId = "thread-123";
-      await ThreadTableTestHelper.addThread({ id: threadId });
+      const newThread = {
+        id: "thread-123",
+        title: "abc",
+        body: "description",
+        owner: "user-123",
+        date: Date.now() / 1000,
+      };
+      await ThreadTableTestHelper.addThread(newThread);
 
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
-      const thread = await threadRepositoryPostgres.detailThread(threadId);
+      const thread = await threadRepositoryPostgres.detailThread("thread-123");
 
       expect(thread).toBeTruthy();
       expect(thread.username).toEqual("dicoding");
       expect(thread.id).toEqual("thread-123");
       expect(thread.title).toEqual("abc");
       expect(thread.body).toEqual("description");
-      expect(thread.date).toEqual(new Date().toDateString("Dy Mon DD YYYY"));
+      expect(thread.date).toEqual(
+        new Date(Date(newThread.date)).toDateString()
+      );
     });
   });
 });

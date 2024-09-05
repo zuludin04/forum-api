@@ -21,7 +21,9 @@ describe("DeleteCommentUseCase", () => {
       .mockImplementation(() => Promise.resolve());
     mockCommentsRepository.softDeleteComment = jest
       .fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(() =>
+        Promise.resolve({ id: "comment-123", owner: "user-123", is_delete: 1 })
+      );
 
     const getUseCase = new CommentDeleteUseCase({
       commentRepository: mockCommentsRepository,
